@@ -36,15 +36,20 @@ main {
 
 main table {
     width: 100%;
-    padding: 0 2rem;
 }
 
-main table th,
+main table th {
+    align-items: center;
+    border-radius: 5%;
+    padding: 3rem;
+    height: max-content;
+
+}
 main table td {
     align-items: center;
     border-radius: 5%;
     height: max-content;
-    padding: 2rem;
+    padding: 3rem;
 }
 
 main table th {
@@ -52,6 +57,7 @@ main table th {
     background-color: #3aa394;
     border: none;
 }
+
 
 main table td {
     background-color: #615458;

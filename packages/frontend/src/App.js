@@ -94,7 +94,8 @@ function App() {
     let holdersArr = [];
 
     response.previousHolders.forEach((holder) => {
-      holder.tiempoHumano = tiempoTranscurrido(holder.tiempo) + (holder.tiempo >= 86400 ? " 💀" : "");
+      holder.tiempoHumano = tiempoTranscurrido(holder.tiempo);
+      holder.overtime = (holder.tiempo >= 86400 ? " 💀" : "");
       holder.recibido = timestampToDateString(holder.timestamp);
       holdersArr.push(holder);
     });
@@ -120,7 +121,7 @@ function App() {
             id="github"
             title="Github"
           >
-            <GoMarkGithub size="3vh" color="#b7aeb4" />
+            <GoMarkGithub size="5vh" color="#b7aeb4" />
           </button>
         </div>
         <h1>El Viajero</h1>
@@ -130,14 +131,14 @@ function App() {
               <tr>
                 <th>#</th>
                 <th>Holder</th>
-                <th>Hold time</th>
+                <th>Hold <p></p> time</th>
                 <th>Recibido</th>
               </tr>
             </thead>
             {!loaded ? (
               <tbody>
                 <tr>
-                  <td colSpan={3} style={{ textAlign: "center" }}>
+                  <td colSpan={4} style={{ textAlign: "center" }}>
                     Cargando...
                   </td>
                 </tr>
@@ -151,8 +152,8 @@ function App() {
                       ? current.ens.domain
                       : current.address}
                   </td>
-                  <td>{current && current.tiempoHumano}</td>
-                  <td>{current && current.recibido }</td>
+                  <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}</td>
+                  <td>{current.recibido[0]}<p></p>{current.recibido[1]}</td>
                 </tr>
                 {holders &&
                   holders.map((holder, i) => {
@@ -160,11 +161,11 @@ function App() {
                       <tr key={i}>
                         <td>#{holders.length - i}</td>
                         <td>
-                          <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''}/>
-                           {holder.ens ? holder.ens.domain : holder.address}
+                          <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''}/>                
+                          <p>{holder.ens ? holder.ens.domain : holder.address}</p> 
                         </td>
-                        <td>{holder.tiempoHumano}</td>
-                        <td>{holder && holder.recibido }</td>
+                        <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}</td>
+                        <td>{holder.recibido[0]}<p></p>{holder.recibido[1]}</td>
                       </tr>
                     );
                   })}
@@ -172,10 +173,13 @@ function App() {
             )}
           </table>
           <h3>
-            Hecho con 🫶 por{" "}
+            Hecho con 🫶 por{" "} &nbsp;
             <a target="_blank" href="https://twitter.com/neeel_eth">
               neeel.eth
-            </a>
+            </a> y &nbsp;
+            <a target="_blank" href="https://twitter.com/olcortesb">
+                olcortesb.eth
+            </a> 
           </h3>
         </main>
       </header>

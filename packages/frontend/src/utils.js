@@ -18,7 +18,7 @@ module.exports = {
     }
     intervalo = Math.floor(segundos / 60);
     if (intervalo >= 1) {
-      return intervalo + " minuto" + (intervalo === 1 ? "" : "s");
+      return [intervalo, " minuto" + (intervalo === 1 ? "" : "s")];
     }
     return segundos + " segundo" + (segundos === 1 ? "" : "s");
   },
@@ -40,7 +40,8 @@ module.exports = {
     const year = date.getFullYear().toString();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    const dateString = `${day}/${month}/${year} ${hours}:${minutes}`;
-    return dateString;
+    const dateString = `${day}/${month}/${year}` ;
+    const hour = `${hours}:${minutes}`;
+    return [dateString,hour];
   }
 }

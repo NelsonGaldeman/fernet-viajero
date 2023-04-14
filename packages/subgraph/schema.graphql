@@ -5,7 +5,7 @@ type Current @entity {
   timestamp: BigInt!
 }
 
-type Previous @entity {
+type PreviousHolder @entity {
   id: ID!
   address: Bytes!
   tiempo: BigInt! # por cuanto tiempo holdeo el viajero

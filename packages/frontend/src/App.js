@@ -12,19 +12,10 @@ import { ethers } from "ethers";
 const endpoint = "https://api.thegraph.com/subgraphs/name/nelsongaldeman/fernet-viajero";
 
 const getENSData = async (address) => {
-  // const provider = new ethers.InfuraProvider(
-  //   "mainnet",
-  //   process.env.REACT_APP_INFURA_KEY
-  // );
-  // const provider = new ethers.AlchemyProvider(
-  //   "mainnet",
-  //   process.env.REACT_APP_ALCHEMY_KEY
-  // )
-
-  const provider = new ethers.QuickNodeProvider(
+  const provider = new ethers.InfuraProvider(
     "mainnet",
-    process.env.REACT_APP_QUICKNODE_KEY
-  )
+    process.env.REACT_APP_INFURA_KEY
+  );
 
   try {
     // Query ENS for the domain associated with the address
@@ -44,12 +35,9 @@ const getENSData = async (address) => {
 };
 
 const processHolder = async (holder, skipEns = false) => {
-  holder.tiempoHumano = tiempoTranscurridoHoras(
-    diferenciaEnSegundos(holder.timestamp)
-  );
+  holder.tiempoHumano = tiempoTranscurridoHoras(holder.tiempo) + (holder.tiempo >= (3600 * 4) ? " 💀" : "");
   holder.recibido = tiempoTranscurrido(diferenciaEnSegundos(holder.timestamp));
   holder.addressHuman = truncateHexString(holder.address, 6, 4);
-  holder.overtime = holder.tiempo >= 86400 ? "💀" : "";
   holder.link = "https://welook.io/" + holder.address;
   
   if (skipEns) {
@@ -169,7 +157,7 @@ function App({ src, fallbackSrc, ...props }) {
                         : current.addressHuman}</p>
                     </a>
                   </td>
-                  <td colspan={2}>{current.tiempoHumano}</td>
+                  <td colspan={2}><p>{current.tiempoHumano}</p></td>
                 </tr>
                 {holders &&
                   holders.map((holder, i) => {
@@ -182,7 +170,7 @@ function App({ src, fallbackSrc, ...props }) {
                             <p>{holder.ens ? holder.ens.domain : holder.addressHuman}</p> 
                           </a>
                         </td>
-                        <td>{holder.tiempoHumano}</td>
+                        <td><p>{holder.tiempoHumano}</p></td>
                         <td><p>{holder.recibido}</p></td>
                       </tr>
                     );

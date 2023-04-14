@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { GoMarkGithub } from 'react-icons/go';
-import { tiempoTranscurrido, diferenciaEnSegundos } from './utils'
-import { InfuraProvider } from 'ethers';
-import { ENS } from '@ensdomains/ensjs';
-
-const endpoint = 'https://api.thegraph.com/subgraphs/name/nelsongaldeman/fernet-viajero';
+import React, { useState, useEffect } from "react";
+import { ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
+import { GoMarkGithub } from "react-icons/go";
+import { tiempoTranscurrido, diferenciaEnSegundos } from "./utils";
+import { useApolloClient } from "@apollo/client";
+import { InfuraProvider } from "ethers";
+// import { ENS } from "@ensdomains/ensjs";
 
 const getENSData = async (address) => {
-  const provider = new InfuraProvider('mainnet', '4086062dc5ab409398967ebe8485f646');
+  const provider = new InfuraProvider(
+    "mainnet",
+    "4086062dc5ab409398967ebe8485f646"
+  );
   const ens = new ENS({ provider });
 
   try {
@@ -16,7 +18,7 @@ const getENSData = async (address) => {
     const domain = await ens.getName(address);
 
     // Query ENS for the avatar associated with the domain
-    const avatar = await ens.getText(domain, 'avatar');
+    const avatar = await ens.getText(domain, "avatar");
 
     return { domain, avatar };
   } catch (error) {
@@ -32,7 +34,7 @@ const processEns = async (holders) => {
       continue;
     }
 
-    holders[i].ens = {domain: ens.domain, avatar: ens.avatar};
+    holders[i].ens = { domain: ens.domain, avatar: ens.avatar };
   }
 
   return holders;
@@ -43,123 +45,154 @@ function App() {
   const [holders, setHolders] = useState(null);
   const [loaded, setLoaded] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let query = gql`
-        query {
-          currents(id:"1") {
-            address
-            block
-            timestamp
-          }
+  let { data, loading, error, refetch } = useQuery(
+    gql`
+      query {
+        currents(id: "1") {
+          address
+          block
+          timestamp
         }
-      `;
+      }
+    `
+  );
 
-      let { loading, error, response } = await useQuery(query, {
-        variables: { address },
-      });
+  console.log(data);
 
-      console.log(response);
-      let owner = response.currents[0];
-      owner.tiempoHumano = tiempoTranscurrido(diferenciaEnSegundos(owner.timestamp));
-      setCurrent(owner);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     let query = gql`
+  //       query {
+  //         currents(id: "1") {
+  //           address
+  //           block
+  //           timestamp
+  //         }
+  //       }
+  //     `;
 
-      // let ownerEns = await getENSData(owner.address);
-      // if (ownerEns && ownersEns.domain) {
-      //   owner.ens = {
-      //     domain: ownerEns.domain,
-      //     avatar: ownerEns.avatar
-      //   };
-      // }
+  //     let { loading, error, response } = await useQuery(query, {
+  //       variables: { address },
+  //     });
 
-      query = gql`
-        query {
-          currents(id:"1") {
-            address
-            block
-            timestamp
-          }
-        }
-      `;
+  //     console.log(response);
+  //     let owner = response.currents[0];
+  //     owner.tiempoHumano = tiempoTranscurrido(
+  //       diferenciaEnSegundos(owner.timestamp)
+  //     );
+  //     setCurrent(owner);
 
-      // { loading, error, response } = await useQuery(query, {
-      //   variables: { address },
-      // });
+  //     // let ownerEns = await getENSData(owner.address);
+  //     // if (ownerEns && ownersEns.domain) {
+  //     //   owner.ens = {
+  //     //     domain: ownerEns.domain,
+  //     //     avatar: ownerEns.avatar
+  //     //   };
+  //     // }
 
-      response = [
-        {address:"0x0", tiempo:10000},
-        {address:"0x1", tiempo:10000},
-        {address:"0x2", tiempo:10000},
-      ]
-      let holdersArr = [];
+  //     query = gql`
+  //       query {
+  //         currents(id: "1") {
+  //           address
+  //           block
+  //           timestamp
+  //         }
+  //       }
+  //     `;
 
-      response.forEach(holder => {
-        holder.tiempoHumano = tiempoTranscurrido(holder.tiempo) + (holder.tiempo >= 86400 ? " 💀" : "");
-        holdersArr.push(holder);
-      });
+  //     // { loading, error, response } = await useQuery(query, {
+  //     //   variables: { address },
+  //     // });
 
-      setHolders(holdersArr);
-      setLoaded(true);
+  //     response = [
+  //       { address: "0x0", tiempo: 10000 },
+  //       { address: "0x1", tiempo: 10000 },
+  //       { address: "0x2", tiempo: 10000 },
+  //     ];
+  //     let holdersArr = [];
 
-      // setHolders(await processEns(holdersArr));
-    };
+  //     response.forEach((holder) => {
+  //       holder.tiempoHumano =
+  //         tiempoTranscurrido(holder.tiempo) +
+  //         (holder.tiempo >= 86400 ? " 💀" : "");
+  //       holdersArr.push(holder);
+  //     });
 
-    fetchData();
-  }, []);
+  //     setHolders(holdersArr);
+  //     setLoaded(true);
+
+  //     // setHolders(await processEns(holdersArr));
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-          <div>
-              <button
-                  onClick={() => window.open("https://github.com/NelsonGaldeman/fernet-viajero")}
-                  aria-label="github" id="github" title="Github"
-              >
-                  <GoMarkGithub
-                      size="3vh"
-                      color="#b7aeb4"
-                  />
-              </button>
-          </div>
-          <h1>El Viajero</h1>
-          <main>
-              <table>
-                  <thead>
-                      <tr>
-                          <th>#</th>
-                          <th>Holder</th>
-                          <th>Tiempo</th>
+        <div>
+          <button
+            onClick={() =>
+              window.open("https://github.com/NelsonGaldeman/fernet-viajero")
+            }
+            aria-label="github"
+            id="github"
+            title="Github"
+          >
+            <GoMarkGithub size="3vh" color="#b7aeb4" />
+          </button>
+        </div>
+        <h1>El Viajero</h1>
+        <main>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Holder</th>
+                <th>Tiempo</th>
+              </tr>
+            </thead>
+            {!loaded ? (
+              <tbody>
+                <tr>
+                  <td colSpan={3} style={{ textAlign: "center" }}>
+                    Cargando...
+                  </td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody>
+                <tr>
+                  <td>Escabiando...</td>
+                  <td>
+                    {current && current.ens
+                      ? current.ens.domain
+                      : current.address}
+                  </td>
+                  <td>{current && current.tiempoHumano}</td>
+                </tr>
+                {holders &&
+                  holders.map((holder, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>#{holders.length - i}</td>
+                        <td>
+                          {holder.ens ? holder.ens.domain : holder.address}
+                        </td>
+                        <td>{holder.tiempoHumano}</td>
                       </tr>
-                  </thead>
-                  {!loaded ? (
-                      <tbody>
-                          <tr>
-                              <td colSpan={3} style={{ textAlign: "center" }}>
-                                  Cargando...
-                              </td>
-                          </tr>
-                      </tbody>
-                  ) : (
-                      <tbody>
-                          <tr>
-                              <td>Escabiando...</td>
-                              <td>{current && current.ens ? current.ens.domain : current.address}</td>
-                              <td>{current && current.tiempoHumano}</td>
-                          </tr>
-                          {holders && holders.map((holder, i) => {
-                              return (
-                                  <tr key={i}>
-                                      <td>#{holders.length - i}</td>
-                                      <td>{holder.ens ? holder.ens.domain : holder.address}</td>
-                                      <td>{holder.tiempoHumano}</td>
-                                  </tr>
-                              );
-                          })}
-                      </tbody>
-                  )}
-              </table>
-              <h3>Hecho con 🫶 por <a target="_blank" href="https://twitter.com/neeel_eth">neeel.eth</a></h3>
-          </main>
+                    );
+                  })}
+              </tbody>
+            )}
+          </table>
+          <h3>
+            Hecho con 🫶 por{" "}
+            <a target="_blank" href="https://twitter.com/neeel_eth">
+              neeel.eth
+            </a>
+          </h3>
+        </main>
       </header>
     </div>
   );

@@ -137,7 +137,7 @@ function App() {
             {!loaded ? (
               <tbody>
                 <tr>
-                  <td colSpan={3} style={{ textAlign: "center" }}>
+                  <td colSpan={4} style={{ textAlign: "center" }}>
                     Cargando...
                   </td>
                 </tr>

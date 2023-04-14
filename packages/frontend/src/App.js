@@ -104,18 +104,18 @@ function App({ src, fallbackSrc, ...props }) {
 
     response = await client.request(query);
     
-    let holdersArr = [];
-    for (let i = 0; i < response.previousHolders.length; i++) {
-      holdersArr.push(await processHolder(response.previousHolders[i],true));
-    }
-
+    let holdersArr = await Promise.all(
+      response.previousHolders.map(holder => processHolder(holder, true))
+    );
+  
     setHolders(holdersArr);
     setLoaded(true);
-
-    holdersArr = [];
-    for (let i = 0; i < response.previousHolders.length; i++) {
-      holdersArr.push(await processHolder(response.previousHolders[i]));
-    }
+  
+    // Second pass: Process holders with skipEns = false
+    holdersArr = await Promise.all(
+      response.previousHolders.map(holder => processHolder(holder))
+    );
+  
     setHolders(holdersArr);
   }
 

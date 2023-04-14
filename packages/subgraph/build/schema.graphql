@@ -1,0 +1,14 @@
+type Current @entity {
+  id: ID!
+  address: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Previous @entity {
+  id: ID!
+  address: Bytes!
+  tiempo: BigInt! # por cuanto tiempo holdeo el viajero
+  block: BigInt!
+  timestamp: BigInt!
+}

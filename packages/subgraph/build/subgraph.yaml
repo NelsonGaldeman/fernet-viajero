@@ -1,0 +1,27 @@
+specVersion: 0.0.4
+features:
+  - nonFatalErrors
+schema:
+  file: schema.graphql
+dataSources:
+  - name: Viajero
+    kind: ethereum/contract
+    network: matic
+    source:
+      address: "0x6c84d94e7c868e55aaabc4a5e06bdfc90ef3bc72"
+      startBlock: 41495856
+      abi: ERC721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: Viajero/Viajero.wasm
+      entities:
+        - Current
+        - Previous
+      abis:
+        - name: ERC721
+          file: Viajero/abis/ERC721.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer

@@ -1,0 +1,22 @@
+{
+  "name": "fernet-viajero-subgraph",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "auth": "graph auth https://api.thegraph.com/deploy/",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ nelsongaldeman/fernet-viajero",
+    "create-local": "graph create --node http://localhost:8020/ nelsongaldeman/fernet-viajero",
+    "remove-local": "graph remove --node http://localhost:8020/ nelsongaldeman/fernet-viajero",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 nelsongaldeman/fernet-viajero",
+    "test": "echo 'No tests yet, implement them'"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.46.1",
+    "@graphprotocol/graph-ts": "0.29.3",
+    "@types/node": "^18.11.18",
+    "ts-node": "^10.8.2",
+    "yaml": "^2.2.1"
+  }
+}

@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { GraphQLClient, gql } from 'graphql-request';
 import { GoMarkGithub } from "react-icons/go";
-import { tiempoTranscurrido, diferenciaEnSegundos, timestampToDateString } from "./utils";
+import { 
+  tiempoTranscurridoHoras, 
+  diferenciaEnSegundos, 
+  tiempoTranscurrido, 
+  truncateHexString
+} from "./utils";
 import { ethers } from "ethers";
 
 const endpoint = "https://api.thegraph.com/subgraphs/name/nelsongaldeman/fernet-viajero";
 
 const getENSData = async (address) => {
-  const provider = new ethers.InfuraProvider(
+  // const provider = new ethers.InfuraProvider(
+  //   "mainnet",
+  //   process.env.REACT_APP_INFURA_KEY
+  // );
+  // const provider = new ethers.AlchemyProvider(
+  //   "mainnet",
+  //   process.env.REACT_APP_ALCHEMY_KEY
+  // )
+
+  const provider = new ethers.QuickNodeProvider(
     "mainnet",
-    "4086062dc5ab409398967ebe8485f646"
-  );
+    process.env.REACT_APP_QUICKNODE_KEY
+  )
 
   try {
     // Query ENS for the domain associated with the address
@@ -19,8 +33,7 @@ const getENSData = async (address) => {
     let avatar;
     if (domain) {
       // Query ENS for the avatar associated with the domain
-      avatar = await provider.getAvatar(domain);
-      console.log(avatar);
+      // avatar = await provider.getAvatar(domain);
     }
 
     return { domain, avatar };
@@ -30,24 +43,38 @@ const getENSData = async (address) => {
   }
 };
 
-const processEns = async (holders) => {
-  for (let i = 0; i < holders.length; i++) {
-    let ens = await getENSData(holders[i].address);
-    if (!ens.domain) {
-      continue;
-    }
-
-    holders[i].ens = { domain: ens.domain, avatar: ens.avatar };
-    console.log(ens);
+const processHolder = async (holder, skipEns = false) => {
+  holder.tiempoHumano = tiempoTranscurridoHoras(
+    diferenciaEnSegundos(holder.timestamp)
+  );
+  holder.recibido = tiempoTranscurrido(diferenciaEnSegundos(holder.timestamp));
+  holder.addressHuman = truncateHexString(holder.address, 6, 4);
+  holder.overtime = holder.tiempo >= 86400 ? "💀" : "";
+  holder.link = "https://welook.io/" + holder.address;
+  
+  if (skipEns) {
+    return holder;
   }
 
-  return holders;
-};
+  let ens = await getENSData(holder.address);
+  if (ens && ens.domain) {
+    holder.ens = {
+      domain: ens.domain,
+      avatar: ens.avatar
+    };
+  }
+  return holder;
+}
 
-function App() {
+function App({ src, fallbackSrc, ...props }) {
   const [current, setCurrent] = useState(null);
   const [holders, setHolders] = useState(null);
   const [loaded, setLoaded] = useState(null);
+  const [imgSrc, setImgSrc] = useState(src);
+
+  function handleImgError() {
+    setImgSrc(fallbackSrc);
+  }
 
   const load = async () => {
     const client = new GraphQLClient(endpoint);
@@ -62,21 +89,7 @@ function App() {
       }
     `
     let response = await client.request(query);
-    
-    let owner = response.currents[0];
-    owner.tiempoHumano = tiempoTranscurrido(
-      diferenciaEnSegundos(owner.timestamp)
-    );
-    owner.recibido = timestampToDateString(owner.timestamp);
-
-    let ownerEns = await getENSData(owner.address);
-    if (ownerEns && ownerEns.domain) {
-      owner.ens = {
-        domain: ownerEns.domain,
-        avatar: ownerEns.avatar
-      };
-    }
-
+    let owner = await processHolder(response.currents[0]);
     setCurrent(owner);
 
     query = gql`
@@ -92,17 +105,18 @@ function App() {
     response = await client.request(query);
     
     let holdersArr = [];
-
-    response.previousHolders.forEach((holder) => {
-      holder.tiempoHumano = tiempoTranscurrido(holder.tiempo);
-      holder.overtime = holder.tiempo >= 86400 ? "💀" : "";
-      holder.recibido = timestampToDateString(holder.timestamp);
-      holdersArr.push(holder);
-    });
+    for (let i = 0; i < response.previousHolders.length; i++) {
+      holdersArr.push(await processHolder(response.previousHolders[i],true));
+    }
 
     setHolders(holdersArr);
-    setHolders(await processEns(holdersArr));
     setLoaded(true);
+
+    holdersArr = [];
+    for (let i = 0; i < response.previousHolders.length; i++) {
+      holdersArr.push(await processHolder(response.previousHolders[i]));
+    }
+    setHolders(holdersArr);
   }
 
   useEffect(() => {
@@ -148,12 +162,14 @@ function App() {
                 <tr>
                   <td>Escabiando...</td>
                   <td>
-                    {current && current.ens
-                      ? current.ens.domain
-                      : current.address}
+                    <a target="_blank" href={current.link}>
+                    <img src={current.ens ? (current.ens.avatar ? current.ens.avatar : '') : ''} onError={handleImgError} style={{ display: imgSrc ? 'block' : 'none' }}/>
+                      <p>{current && current.ens
+                        ? current.ens.domain
+                        : current.addressHuman}</p>
+                    </a>
                   </td>
-                  <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}</td>
-                  <td>{current.recibido[0]}<p></p>{current.recibido[1]}</td>
+                  <td colspan={2}>{current.tiempoHumano}</td>
                 </tr>
                 {holders &&
                   holders.map((holder, i) => {
@@ -161,11 +177,13 @@ function App() {
                       <tr key={i}>
                         <td>#{holders.length - i}</td>
                         <td>
-                          <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''}/>                
-                          <p>{holder.ens ? holder.ens.domain : holder.address}</p> 
+                          <a target="_blank" href={holder.link}>
+                            <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''} onError={handleImgError} style={{ display: imgSrc ? 'block' : 'none' }}/>
+                            <p>{holder.ens ? holder.ens.domain : holder.addressHuman}</p> 
+                          </a>
                         </td>
-                        <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}<p></p>{holder.overtime}</td>
-                        <td>{holder.recibido[0]}<p></p>{holder.recibido[1]}</td>
+                        <td>{holder.tiempoHumano}</td>
+                        <td><p>{holder.recibido}</p></td>
                       </tr>
                     );
                   })}

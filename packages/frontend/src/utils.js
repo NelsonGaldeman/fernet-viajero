@@ -2,25 +2,32 @@ module.exports = {
   tiempoTranscurrido: (segundos) => {
     let intervalo = Math.floor(segundos / 31536000);
     if (intervalo >= 1) {
-      return intervalo + " año" + (intervalo === 1 ? "" : "s");
+      return "Hace " + intervalo + " año" + (intervalo === 1 ? "" : "s");
     }
     intervalo = Math.floor(segundos / 2592000);
     if (intervalo >= 1) {
-      return intervalo + " mes" + (intervalo === 1 ? "" : "es");
+      return "Hace " + intervalo + " mes" + (intervalo === 1 ? "" : "es");
     }
     intervalo = Math.floor(segundos / 86400);
     if (intervalo >= 1) {
-      return intervalo + " día" + (intervalo === 1 ? "" : "s");
+      return "Hace " + intervalo + " día" + (intervalo === 1 ? "" : "s");
     }
     intervalo = Math.floor(segundos / 3600);
     if (intervalo >= 1) {
-      return intervalo + " hora" + (intervalo === 1 ? "" : "s");
+      return "Hace " + intervalo + " hora" + (intervalo === 1 ? "" : "s");
     }
     intervalo = Math.floor(segundos / 60);
     if (intervalo >= 1) {
-      return [intervalo, " minuto" + (intervalo === 1 ? "" : "s")];
+      return "Hace " + intervalo, " minuto" + (intervalo === 1 ? "" : "s");
     }
-    return segundos + " segundo" + (segundos === 1 ? "" : "s");
+    return "Hace " + segundos + " segundo" + (segundos === 1 ? "" : "s");
+  },
+
+  tiempoTranscurridoHoras: (segundos) => {
+    let horas = Math.floor(segundos / 3600);
+    let minutos = Math.floor((segundos % 3600) / 60);
+    
+    return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
   },
   
   diferenciaEnSegundos: (tiempo) => {
@@ -43,5 +50,12 @@ module.exports = {
     const dateString = `${day}/${month}/${year}` ;
     const hour = `${hours}:${minutes}`;
     return [dateString,hour];
+  },
+
+  truncateHexString: (hexString, startLength, endLength) => {
+    const length = hexString.length;
+    const start = hexString.substring(0, startLength);
+    const end = hexString.substring(length - endLength, length);
+    return `${start}...${end}`;
   }
 }

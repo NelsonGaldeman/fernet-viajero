@@ -36,7 +36,26 @@ hr {
 }
 
 td img {
-    width: 60px;
+    width: 40px;
+    border-radius: 50%;
+    top: 14px;
+    position: relative;
+    margin-right: 8px;
+}
+
+td {
+    text-align: center;
+}
+
+td p {
+    display: inline;
+    white-space: nowrap;
+}
+
+td a {
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
 }
 
 pre {

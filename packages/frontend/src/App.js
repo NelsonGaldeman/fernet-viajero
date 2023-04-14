@@ -95,7 +95,7 @@ function App() {
 
     response.previousHolders.forEach((holder) => {
       holder.tiempoHumano = tiempoTranscurrido(holder.tiempo);
-      holder.overtime = (holder.tiempo >= 86400 ? " 💀" : "");
+      holder.overtime = holder.tiempo >= 86400 ? "💀" : "";
       holder.recibido = timestampToDateString(holder.timestamp);
       holdersArr.push(holder);
     });
@@ -164,7 +164,7 @@ function App() {
                           <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''}/>                
                           <p>{holder.ens ? holder.ens.domain : holder.address}</p> 
                         </td>
-                        <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}</td>
+                        <td>{current.tiempoHumano[0]}<p></p>{current.tiempoHumano[1]}<p></p>{holder.overtime}</td>
                         <td>{holder.recibido[0]}<p></p>{holder.recibido[1]}</td>
                       </tr>
                     );

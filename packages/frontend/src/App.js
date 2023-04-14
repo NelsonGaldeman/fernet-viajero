@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
+import { GraphQLClient, gql } from 'graphql-request';
 import { GoMarkGithub } from "react-icons/go";
-import { tiempoTranscurrido, diferenciaEnSegundos } from "./utils";
-import { useApolloClient } from "@apollo/client";
-import { InfuraProvider } from "ethers";
-// import { ENS } from "@ensdomains/ensjs";
+import { tiempoTranscurrido, diferenciaEnSegundos, timestampToDateString } from "./utils";
+import { ethers } from "ethers";
+
+const endpoint = "https://api.thegraph.com/subgraphs/name/nelsongaldeman/fernet-viajero";
 
 const getENSData = async (address) => {
-  const provider = new InfuraProvider(
+  const provider = new ethers.InfuraProvider(
     "mainnet",
     "4086062dc5ab409398967ebe8485f646"
   );
-  const ens = new ENS({ provider });
 
   try {
     // Query ENS for the domain associated with the address
-    const domain = await ens.getName(address);
+    const domain = await provider.lookupAddress(address);
 
-    // Query ENS for the avatar associated with the domain
-    const avatar = await ens.getText(domain, "avatar");
+    let avatar;
+    if (domain) {
+      // Query ENS for the avatar associated with the domain
+      avatar = await provider.getAvatar(domain);
+      console.log(avatar);
+    }
 
     return { domain, avatar };
   } catch (error) {
@@ -29,12 +32,13 @@ const getENSData = async (address) => {
 
 const processEns = async (holders) => {
   for (let i = 0; i < holders.length; i++) {
-    let ens = await getENSData(holder.address);
+    let ens = await getENSData(holders[i].address);
     if (!ens.domain) {
       continue;
     }
 
     holders[i].ens = { domain: ens.domain, avatar: ens.avatar };
+    console.log(ens);
   }
 
   return holders;
@@ -45,8 +49,10 @@ function App() {
   const [holders, setHolders] = useState(null);
   const [loaded, setLoaded] = useState(null);
 
-  let { data, loading, error, refetch } = useQuery(
-    gql`
+  const load = async () => {
+    const client = new GraphQLClient(endpoint);
+
+    let query = gql`
       query {
         currents(id: "1") {
           address
@@ -55,77 +61,52 @@ function App() {
         }
       }
     `
-  );
+    let response = await client.request(query);
+    
+    let owner = response.currents[0];
+    owner.tiempoHumano = tiempoTranscurrido(
+      diferenciaEnSegundos(owner.timestamp)
+    );
+    owner.recibido = timestampToDateString(owner.timestamp);
 
-  console.log(data);
+    let ownerEns = await getENSData(owner.address);
+    if (ownerEns && ownerEns.domain) {
+      owner.ens = {
+        domain: ownerEns.domain,
+        avatar: ownerEns.avatar
+      };
+    }
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     let query = gql`
-  //       query {
-  //         currents(id: "1") {
-  //           address
-  //           block
-  //           timestamp
-  //         }
-  //       }
-  //     `;
+    setCurrent(owner);
 
-  //     let { loading, error, response } = await useQuery(query, {
-  //       variables: { address },
-  //     });
+    query = gql`
+      query {
+        previousHolders(orderBy: block, orderDirection: desc) {
+          address
+          tiempo
+          timestamp
+        }
+      }
+    `;
 
-  //     console.log(response);
-  //     let owner = response.currents[0];
-  //     owner.tiempoHumano = tiempoTranscurrido(
-  //       diferenciaEnSegundos(owner.timestamp)
-  //     );
-  //     setCurrent(owner);
+    response = await client.request(query);
+    
+    let holdersArr = [];
 
-  //     // let ownerEns = await getENSData(owner.address);
-  //     // if (ownerEns && ownersEns.domain) {
-  //     //   owner.ens = {
-  //     //     domain: ownerEns.domain,
-  //     //     avatar: ownerEns.avatar
-  //     //   };
-  //     // }
+    response.previousHolders.forEach((holder) => {
+      holder.tiempoHumano = tiempoTranscurrido(holder.tiempo) + (holder.tiempo >= 86400 ? " 💀" : "");
+      holder.recibido = timestampToDateString(holder.timestamp);
+      holdersArr.push(holder);
+    });
 
-  //     query = gql`
-  //       query {
-  //         currents(id: "1") {
-  //           address
-  //           block
-  //           timestamp
-  //         }
-  //       }
-  //     `;
+    setHolders(holdersArr);
+    setHolders(await processEns(holdersArr));
+    setLoaded(true);
+  }
 
-  //     // { loading, error, response } = await useQuery(query, {
-  //     //   variables: { address },
-  //     // });
-
-  //     response = [
-  //       { address: "0x0", tiempo: 10000 },
-  //       { address: "0x1", tiempo: 10000 },
-  //       { address: "0x2", tiempo: 10000 },
-  //     ];
-  //     let holdersArr = [];
-
-  //     response.forEach((holder) => {
-  //       holder.tiempoHumano =
-  //         tiempoTranscurrido(holder.tiempo) +
-  //         (holder.tiempo >= 86400 ? " 💀" : "");
-  //       holdersArr.push(holder);
-  //     });
-
-  //     setHolders(holdersArr);
-  //     setLoaded(true);
-
-  //     // setHolders(await processEns(holdersArr));
-  //   };
-
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
     <div className="App">
@@ -149,7 +130,8 @@ function App() {
               <tr>
                 <th>#</th>
                 <th>Holder</th>
-                <th>Tiempo</th>
+                <th>Hold time</th>
+                <th>Recibido</th>
               </tr>
             </thead>
             {!loaded ? (
@@ -170,6 +152,7 @@ function App() {
                       : current.address}
                   </td>
                   <td>{current && current.tiempoHumano}</td>
+                  <td>{current && current.recibido }</td>
                 </tr>
                 {holders &&
                   holders.map((holder, i) => {
@@ -177,9 +160,11 @@ function App() {
                       <tr key={i}>
                         <td>#{holders.length - i}</td>
                         <td>
-                          {holder.ens ? holder.ens.domain : holder.address}
+                          <img src={holder.ens ? (holder.ens.avatar ? holder.ens.avatar : '') : ''}/>
+                           {holder.ens ? holder.ens.domain : holder.address}
                         </td>
                         <td>{holder.tiempoHumano}</td>
+                        <td>{holder && holder.recibido }</td>
                       </tr>
                     );
                   })}

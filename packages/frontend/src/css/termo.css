@@ -31,6 +31,10 @@ hr {
     overflow: visible;
 }
 
+td img {
+    width: 60px;
+}
+
 pre {
     font-family: monospace, monospace;
     font-size: 1em;

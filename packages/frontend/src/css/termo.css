@@ -128,10 +128,10 @@ body {
     color: #fafaff;
     flex-direction: column;
     font-family: Mitr, sans-serif;
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-    user-select: all;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select:text;
 }
 /* 
 body, h1 {
@@ -178,10 +178,10 @@ main {
     flex-shrink: 50;
     justify-content: center;
     margin: 4vh 2;
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-    user-select: all;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
     width: 100%;
 }
 

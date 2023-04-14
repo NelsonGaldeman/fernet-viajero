@@ -1,0 +1,22 @@
+.footer {
+  padding: 0 64px;
+}
+
+.footerContent {
+  width: 100%;
+  max-width: 1200px;
+  height: 60px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.message {
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.message a {
+  color: var(--palette-primary);
+  text-decoration: none;
+}

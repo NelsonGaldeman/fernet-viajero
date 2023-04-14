@@ -1,0 +1,45 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+  padding: 32px 64px;
+}
+
+.mainContent {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Scrollbars */
+* {
+  scrollbar-color: #d5d5d5 transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+*::-webkit-scrollbar:vertical {
+  width: 10px;
+}
+*::-webkit-scrollbar-button:increment,
+*::-webkit-scrollbar-button {
+  display: none;
+}
+*::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  cursor: move;
+  border: none;
+  border-radius: 20px;
+  background-color: #d5d5d5;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+}

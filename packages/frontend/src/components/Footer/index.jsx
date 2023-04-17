@@ -9,9 +9,13 @@ const Footer = () => {
           Hecho con 🫶 por{" "}
           <a target="_blank" href="https://twitter.com/neeel_eth">
             neeel.eth
-          </a> y&nbsp;
+          </a>,&nbsp;
           <a target="_blank" href="https://twitter.com/olcortesb">
             olcortesb
+          </a>
+            &nbsp;y&nbsp;
+          <a target="_blank" href="https://twitter.com/BalongaJavier">
+            javi
           </a>
         </h3>
       </div>

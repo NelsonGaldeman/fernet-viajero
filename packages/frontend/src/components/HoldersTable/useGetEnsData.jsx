@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import useGetLensHandle from "./useGetLensHandle";
 
 const provider = new ethers.InfuraProvider(
   "mainnet",
-  "4086062dc5ab409398967ebe8485f646"
+  process.env.REACT_APP_INFURA_KEY
 );
 
 const useGetEnsData = (address) => {
@@ -17,13 +18,16 @@ const useGetEnsData = (address) => {
       try {
         setLoading(true); 
 
-        let domain;
+        let domain, lens;
         if (localStorage.getItem(address)) {
           domain = JSON.parse(localStorage.getItem(address)).domain;
+          lens = JSON.parse(localStorage.getItem(address)).lens;
         } else { 
           // Query ENS for the domain associated with the address
           domain = await provider.lookupAddress(address);
-          localStorage.setItem(address, JSON.stringify({domain:domain, avatar:null}));
+          lens = useGetLensHandle(address);
+
+          localStorage.setItem(address, JSON.stringify({domain:domain, avatar:null, lens}));
         }
         
         if (domain) {
@@ -34,7 +38,7 @@ const useGetEnsData = (address) => {
             avatar = await provider.getAvatar(domain);
           }
           
-          setData({ domain, avatar });
+          setData({ domain, avatar, lens });
         }
       } catch (error) {
         console.error(error);

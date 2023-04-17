@@ -42,11 +42,11 @@ const Owner = () => {
     <tr>
       <td>
         <a target="_blank" href={"https://welook.io/" + curretOwner?.address + "/polygon.0x6c84d94e7c868e55aaabc4a5e06bdfc90ef3bc72.21260.ERC721"}>
-          <img class={s.viajero}/>
+          <img className={s.viajero}/>
         </a>
       </td>
       <td>
-        <a class={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
+        <a className={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Avatar src={ensData?.avatar} />
             {ensData?.domain || shortenAddress(curretOwner?.address)}

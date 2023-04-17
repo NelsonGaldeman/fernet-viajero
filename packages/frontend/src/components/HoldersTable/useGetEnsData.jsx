@@ -15,12 +15,25 @@ const useGetEnsData = (address) => {
     if (!address) return;
     async function fetch() {
       try {
-        setLoading(true);
-        // Query ENS for the domain associated with the address
-        const domain = await provider.lookupAddress(address);
+        setLoading(true); 
+
+        let domain;
+        if (localStorage.getItem(address)) {
+          domain = JSON.parse(localStorage.getItem(address)).domain;
+        } else { 
+          // Query ENS for the domain associated with the address
+          domain = await provider.lookupAddress(address);
+          localStorage.setItem(address, JSON.stringify({domain:domain, avatar:null}));
+        }
+        
         if (domain) {
-          // Query ENS for the avatar associated with the domain
-          const avatar = await provider.getAvatar(domain);
+          let avatar = JSON.parse(localStorage.getItem(address)).avatar;
+
+          if (!avatar) {
+            // Query ENS for the avatar associated with the domain
+            avatar = await provider.getAvatar(domain);
+          }
+          
           setData({ domain, avatar });
         }
       } catch (error) {

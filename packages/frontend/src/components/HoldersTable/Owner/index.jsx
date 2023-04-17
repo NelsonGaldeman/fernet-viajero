@@ -2,6 +2,7 @@ import React from "react";
 import {
   diferenciaEnSegundos,
   tiempoTranscurrido,
+  tiempoTranscurridoHoras,
   timestampToDateString,
 } from "../../../utils";
 import useGetCurretOwner from "./useGetCurretOwner";
@@ -45,11 +46,10 @@ const Owner = () => {
           {ensData?.domain || curretOwner?.address}
         </div>
       </td>
-      <td>
+      <td colSpan={2}>
         {curretOwner &&
-          tiempoTranscurrido(diferenciaEnSegundos(curretOwner.timestamp))}
+          tiempoTranscurridoHoras(diferenciaEnSegundos(curretOwner.timestamp))}
       </td>
-      <td>{timestampToDateString(curretOwner.timestamp)}</td>
     </tr>
   );
 };

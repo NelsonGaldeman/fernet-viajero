@@ -1,5 +1,5 @@
 import React from "react";
-import { tiempoTranscurrido, timestampToDateString } from "../../../../utils";
+import { diferenciaEnSegundos, tiempoTranscurrido, tiempoTranscurridoHoras } from "../../../../utils";
 import useGetEnsData from "../../useGetEnsData";
 import Avatar from "../../../Avatar";
 import Skeleton from "../../../Skeleton";
@@ -35,12 +35,12 @@ const PreviousHolder = ({ previousHolder }) => {
         </div>
       </td>
       <td>
-        {previousHolder.tiempo && tiempoTranscurrido(previousHolder.tiempo)}
+        {previousHolder.tiempo && tiempoTranscurridoHoras(previousHolder.tiempo)}
         {previousHolder.tiempo && previousHolder.tiempo >= 86400 && " 💀"}
       </td>
       <td>
         {previousHolder.timestamp &&
-          timestampToDateString(previousHolder.timestamp)}
+          tiempoTranscurrido(diferenciaEnSegundos(previousHolder.timestamp))}
       </td>
     </tr>
   );

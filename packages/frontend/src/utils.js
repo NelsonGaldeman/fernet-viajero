@@ -1,25 +1,36 @@
 export const tiempoTranscurrido = (segundos) => {
   let intervalo = Math.floor(segundos / 31536000);
   if (intervalo >= 1) {
-    return intervalo + " año" + (intervalo === 1 ? "" : "s");
+    return "Hace " + intervalo + " año" + (intervalo === 1 ? "" : "s");
   }
   intervalo = Math.floor(segundos / 2592000);
   if (intervalo >= 1) {
-    return intervalo + " mes" + (intervalo === 1 ? "" : "es");
+    return "Hace " + intervalo + " mes" + (intervalo === 1 ? "" : "es");
   }
   intervalo = Math.floor(segundos / 86400);
   if (intervalo >= 1) {
-    return intervalo + " día" + (intervalo === 1 ? "" : "s");
+    return "Hace " + intervalo + " día" + (intervalo === 1 ? "" : "s");
   }
   intervalo = Math.floor(segundos / 3600);
   if (intervalo >= 1) {
-    return intervalo + " hora" + (intervalo === 1 ? "" : "s");
+    return "Hace " + intervalo + " hora" + (intervalo === 1 ? "" : "s");
   }
   intervalo = Math.floor(segundos / 60);
   if (intervalo >= 1) {
-    return intervalo + " minuto" + (intervalo === 1 ? "" : "s");
+    return "Hace " + intervalo + " minuto" + (intervalo === 1 ? "" : "s");
   }
-  return segundos + " segundo" + (segundos === 1 ? "" : "s");
+  return "Hace " + segundos + " segundo" + (segundos === 1 ? "" : "s");
+};
+
+export const tiempoTranscurridoHoras = (segundos) => {
+  const horas = Math.floor(segundos / 3600);
+  const minutos = Math.floor((segundos % 3600) / 60);
+  
+  const pad = (num) => {
+    return num < 10 ? "0" + num : num;
+  };
+  
+  return pad(horas) + ":" + pad(minutos) + "hs";
 };
 
 export const diferenciaEnSegundos = (tiempo) => {
@@ -32,13 +43,3 @@ export const diferenciaEnSegundos = (tiempo) => {
   return diferenciaEnSegundos;
 };
 
-export const timestampToDateString = (timestamp) => {
-  const date = new Date(timestamp * 1000);
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString();
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const dateString = `${day}/${month}/${year} ${hours}:${minutes}`;
-  return dateString;
-};

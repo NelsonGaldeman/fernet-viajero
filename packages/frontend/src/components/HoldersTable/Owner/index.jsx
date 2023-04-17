@@ -1,9 +1,8 @@
 import React from "react";
 import {
   diferenciaEnSegundos,
-  tiempoTranscurrido,
   tiempoTranscurridoHoras,
-  timestampToDateString,
+  shortenAddress,
 } from "../../../utils";
 import useGetCurretOwner from "./useGetCurretOwner";
 import useGetEnsData from "../useGetEnsData";
@@ -11,6 +10,7 @@ import Avatar from "../../Avatar";
 import Skeleton from "../../Skeleton";
 import ErrorComponent from "../../ErrorComponent";
 import s from "./styles.module.css";
+import parentS from "../styles.module.css";
 
 const Owner = () => {
   const {
@@ -45,12 +45,13 @@ const Owner = () => {
           <img class={s.viajero}/>
         </a>
       </td>
-        
       <td>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Avatar src={ensData?.avatar} />
-          {ensData?.domain || curretOwner?.address}
-        </div>
+        <a class={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Avatar src={ensData?.avatar} />
+            {ensData?.domain || shortenAddress(curretOwner?.address)}
+          </div>
+        </a>
       </td>
       <td colSpan={2}>
         {curretOwner &&

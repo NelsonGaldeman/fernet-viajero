@@ -26,3 +26,9 @@
   font-size: 14px;
   color: var(--palette-font);
 }
+
+.link {
+  text-decoration: none;
+  cursor: pointer;
+  color: white;
+}

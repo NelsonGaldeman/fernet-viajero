@@ -1,9 +1,15 @@
 import React from "react";
-import { diferenciaEnSegundos, tiempoTranscurrido, tiempoTranscurridoHoras } from "../../../../utils";
+import { 
+  diferenciaEnSegundos, 
+  tiempoTranscurrido, 
+  tiempoTranscurridoHoras,
+  shortenAddress,
+} from "../../../../utils";
 import useGetEnsData from "../../useGetEnsData";
 import Avatar from "../../../Avatar";
 import Skeleton from "../../../Skeleton";
 import ErrorComponent from "../../../ErrorComponent";
+import parentS from "../../styles.module.css";
 
 const PreviousHolder = ({ previousHolder }) => {
   const {
@@ -29,10 +35,12 @@ const PreviousHolder = ({ previousHolder }) => {
     <tr>
       <td>#{previousHolder.number}</td>
       <td>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Avatar src={ensData?.avatar} />
-          {ensData?.domain || previousHolder.address}
-        </div>
+        <a class={parentS.link} target="_blank" href={"https://welook.io/" + previousHolder.address}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Avatar src={ensData?.avatar} />
+            {ensData?.domain || shortenAddress(previousHolder.address)}
+          </div>
+        </a>
       </td>
       <td>
         {previousHolder.tiempo && tiempoTranscurridoHoras(previousHolder.tiempo)}

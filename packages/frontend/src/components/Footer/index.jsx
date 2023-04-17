@@ -14,7 +14,7 @@ const Footer = () => {
             olcortesb
           </a>
             &nbsp;y&nbsp;
-          <a target="_blank" href="https://twitter.com/BalongaJavier">
+          <a target="_blank" href="https://github.com/JavierBalonga">
             javi
           </a>
         </h3>

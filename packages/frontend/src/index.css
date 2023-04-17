@@ -1,0 +1,21 @@
+:root {
+  --palette-background: #252e42;
+  --palette-background-paper: #2e3b52;
+  --palette-font: #fff;
+  --palette-primary: #f5487f;
+  --palette-white: #f2f2f2;
+
+  --palette-error: #e57373;
+}
+
+body {
+  font-family: Mitr, sans-serif;
+  background-color: var(--palette-background);
+  color: var(--palette-font);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

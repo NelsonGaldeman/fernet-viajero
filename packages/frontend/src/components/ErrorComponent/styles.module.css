@@ -1,0 +1,5 @@
+.error {
+  background-color: var(--palette-error);
+  color: var(--palette-font);
+  text-align: center;
+}

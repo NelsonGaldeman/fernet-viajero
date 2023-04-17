@@ -1,0 +1,23 @@
+.header {
+  padding: 0 64px;
+}
+
+.headerContent {
+  width: 100%;
+  max-width: 1200px;
+  height: 60px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.githubLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 50%;
+}

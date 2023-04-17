@@ -56,6 +56,8 @@ const Owner = () => {
       <td colSpan={2}>
         {curretOwner &&
           tiempoTranscurridoHoras(diferenciaEnSegundos(curretOwner.timestamp))}
+        {curretOwner &&
+          diferenciaEnSegundos(curretOwner.timestamp) > 3600 * 4 ? "&nbsp;💀":""}
       </td>
     </tr>
   );

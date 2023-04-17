@@ -44,7 +44,7 @@ const PreviousHolder = ({ previousHolder }) => {
       </td>
       <td>
         {previousHolder.tiempo && tiempoTranscurridoHoras(previousHolder.tiempo)}
-        {previousHolder.tiempo && previousHolder.tiempo >= 86400 && " 💀"}
+        {previousHolder.tiempo && previousHolder.tiempo >= 3600 * 4 && " 💀"}
       </td>
       <td>
         {previousHolder.timestamp &&

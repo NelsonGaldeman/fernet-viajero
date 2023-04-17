@@ -1,0 +1,5 @@
+.viajero {
+  content:url('./viajero.jpg');
+  width: 40px;
+  border-radius: 5px;
+}

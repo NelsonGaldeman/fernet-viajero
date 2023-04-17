@@ -10,6 +10,7 @@ import useGetEnsData from "../useGetEnsData";
 import Avatar from "../../Avatar";
 import Skeleton from "../../Skeleton";
 import ErrorComponent from "../../ErrorComponent";
+import s from "./styles.module.css";
 
 const Owner = () => {
   const {
@@ -39,7 +40,12 @@ const Owner = () => {
     </tr>
   ) : (
     <tr>
-      <td>Escabiando...</td>
+      <td>
+        <a target="_blank" href={"https://welook.io/" + curretOwner?.address + "/polygon.0x6c84d94e7c868e55aaabc4a5e06bdfc90ef3bc72.21260.ERC721"}>
+          <img class={s.viajero}/>
+        </a>
+      </td>
+        
       <td>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <Avatar src={ensData?.avatar} />

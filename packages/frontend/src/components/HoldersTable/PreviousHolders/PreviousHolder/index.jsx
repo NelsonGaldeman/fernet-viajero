@@ -38,7 +38,7 @@ const PreviousHolder = ({ previousHolder }) => {
         <a className={parentS.link} target="_blank" href={"https://welook.io/" + previousHolder.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Avatar src={ensData?.avatar} />
-            {ensData?.domain || shortenAddress(previousHolder.address)}
+            {ensData?.domain || ensData?.lens || shortenAddress(previousHolder.address)}
           </div>
         </a>
       </td>

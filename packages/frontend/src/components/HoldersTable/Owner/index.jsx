@@ -49,7 +49,7 @@ const Owner = () => {
         <a className={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Avatar src={ensData?.avatar} />
-            {ensData?.domain || shortenAddress(curretOwner?.address)}
+            {ensData?.domain || ensData?.lens || shortenAddress(curretOwner?.address)}
           </div>
         </a>
       </td>

@@ -2,17 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 
-const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/nelsongaldeman/fernet-viajero",
-  cache: new InMemoryCache(),
-});
+import { splitClient } from "./Apollo"; 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
+    <ApolloProvider client={splitClient}>
       <App />
     </ApolloProvider>
   </React.StrictMode>

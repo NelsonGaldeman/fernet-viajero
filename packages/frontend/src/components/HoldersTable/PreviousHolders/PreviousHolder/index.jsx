@@ -10,6 +10,8 @@ import Avatar from "../../../Avatar";
 import Skeleton from "../../../Skeleton";
 import ErrorComponent from "../../../ErrorComponent";
 import parentS from "../../styles.module.css";
+import Holder from "../../Holder";
+
 
 const PreviousHolder = ({ previousHolder }) => {
   const {
@@ -37,8 +39,8 @@ const PreviousHolder = ({ previousHolder }) => {
       <td>
         <a className={parentS.link} target="_blank" href={"https://welook.io/" + previousHolder.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Avatar src={ensData?.avatar} />
-            {ensData?.domain || ensData?.lens || shortenAddress(previousHolder.address)}
+            <Avatar src={ensData?.avatar} address={previousHolder?.address}/>
+            {ensData?.domain || <Holder address={previousHolder?.address} />}
           </div>
         </a>
       </td>

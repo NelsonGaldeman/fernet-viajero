@@ -1,6 +1,6 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import useGetLensHandle from "./useGetLensHandle";
 
 const provider = new ethers.InfuraProvider(
   "mainnet",
@@ -25,7 +25,6 @@ const useGetEnsData = (address) => {
         } else { 
           // Query ENS for the domain associated with the address
           domain = await provider.lookupAddress(address);
-          lens = useGetLensHandle(address);
 
           localStorage.setItem(address, JSON.stringify({domain:domain, avatar:null, lens}));
         }

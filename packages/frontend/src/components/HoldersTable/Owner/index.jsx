@@ -11,6 +11,8 @@ import Skeleton from "../../Skeleton";
 import ErrorComponent from "../../ErrorComponent";
 import s from "./styles.module.css";
 import parentS from "../styles.module.css";
+import Holder from "../Holder";
+
 
 const Owner = () => {
   const {
@@ -48,8 +50,8 @@ const Owner = () => {
       <td>
         <a className={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Avatar src={ensData?.avatar} />
-            {ensData?.domain || ensData?.lens || shortenAddress(curretOwner?.address)}
+            <Avatar src={ensData?.avatar} address={curretOwner?.address} />
+            {ensData?.domain || <Holder address={curretOwner?.address} />}
           </div>
         </a>
       </td>
@@ -57,7 +59,7 @@ const Owner = () => {
         {curretOwner &&
           tiempoTranscurridoHoras(diferenciaEnSegundos(curretOwner.timestamp))}
         {curretOwner &&
-          diferenciaEnSegundos(curretOwner.timestamp) > 3600 * 4 ? "&nbsp;💀":""}
+          diferenciaEnSegundos(curretOwner.timestamp) > 3600 * 4 ? " 💀":""}
       </td>
     </tr>
   );

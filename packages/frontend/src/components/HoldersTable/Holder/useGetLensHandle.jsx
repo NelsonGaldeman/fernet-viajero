@@ -4,6 +4,21 @@ const GET_LENS_HANDLE = gql`
 query DefaultProfile($address: EthereumAddress!){
   defaultProfile(request: { ethereumAddress: $address}) {
     handle
+    picture {
+      ... on NftImage {
+        contractAddress
+        tokenId
+        uri
+        chainId
+        verified
+      }
+      ... on MediaSet {
+        original {
+          url
+          mimeType
+        }
+      }
+    }
 	}
 }
 `;

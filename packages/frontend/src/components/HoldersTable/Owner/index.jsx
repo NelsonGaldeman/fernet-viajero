@@ -50,7 +50,7 @@ const Owner = () => {
       <td>
         <a className={parentS.link} target="_blank" href={"https://welook.io/" + curretOwner?.address}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Avatar src={ensData?.avatar} />
+            <Avatar src={ensData?.avatar} address={curretOwner?.address} />
             {ensData?.domain || <Holder address={curretOwner?.address} />}
           </div>
         </a>
@@ -59,7 +59,7 @@ const Owner = () => {
         {curretOwner &&
           tiempoTranscurridoHoras(diferenciaEnSegundos(curretOwner.timestamp))}
         {curretOwner &&
-          diferenciaEnSegundos(curretOwner.timestamp) > 3600 * 4 ? "&nbsp;💀":""}
+          diferenciaEnSegundos(curretOwner.timestamp) > 3600 * 4 ? " 💀":""}
       </td>
     </tr>
   );

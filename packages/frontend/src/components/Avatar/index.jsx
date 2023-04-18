@@ -1,17 +1,30 @@
 import React from "react";
+//import { MediaRenderer } from "@thirdweb-dev/react";
 import s from "./styles.module.css";
 import defaultAvatar from "./default-avatar.png";
+import useGetLensHandle from "../HoldersTable/Holder/useGetLensHandle";
 
-const Avatar = ({ src, ...props }) => {
-  return (
-    <img
-      src={src || defaultAvatar}
-      alt="Avatar"
-      loading="lazy"
-      {...props}
-      className={s.avatar}
-    />
-  );
+const Avatar = ({ src, address,...props }) => {
+  console.log('adress',address);
+  const {
+    data: currentHolder,
+    loading: currentLoading,
+    error: currentError,
+  } = useGetLensHandle(address);
+  
+ const uri = currentHolder?.picture?.original?.url?.split('//').pop();
+ const cid = uri?.split('/').pop()
+ const ipfsUri = cid ? 'https://ipfs.io/ipfs/'+cid :false;
+
+ return (
+      <img
+        src={src || ipfsUri || defaultAvatar}
+        alt="Avatar"
+        loading="lazy"
+        {...props}
+        className={s.avatar}
+      />
+    ) 
 };
 
 export default Avatar;

@@ -12,13 +12,11 @@ const Avatar = ({ src, address,...props }) => {
     error: currentError,
   } = useGetLensHandle(address);
   
- const uri = currentHolder?.picture?.original?.url?.split('//').pop();
- const cid = uri?.split('/').pop()
- const ipfsUri = cid ? 'https://ipfs.io/ipfs/'+cid :false;
+  const lensAvatar = currentHolder?.picture?.original?.url;
 
  return (
       <img
-        src={src || ipfsUri || defaultAvatar}
+        src={src || lensAvatar || defaultAvatar}
         alt="Avatar"
         loading="lazy"
         {...props}

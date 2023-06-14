@@ -23,14 +23,19 @@ export const tiempoTranscurrido = (segundos) => {
 };
 
 export const tiempoTranscurridoHoras = (segundos) => {
-  const horas = Math.floor(segundos / 3600);
+  const dias = Math.floor(segundos / 86400);
+  let horas = Math.floor(segundos / 3600);
   const minutos = Math.floor((segundos % 3600) / 60);
+
+  if (dias > 0) {
+    horas -= (dias * 24);
+  }
   
   const pad = (num) => {
     return num < 10 ? "0" + num : num;
   };
   
-  return pad(horas) + ":" + pad(minutos) + "hs";
+  return (dias > 0 ? dias + " días y " : "") + pad(horas) + ":" + pad(minutos) + "hs";
 };
 
 export const diferenciaEnSegundos = (tiempo) => {
